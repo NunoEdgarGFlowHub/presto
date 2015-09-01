@@ -57,6 +57,8 @@
         <air.test.parallel>methods</air.test.parallel>
         <air.test.thread-count>4</air.test.thread-count>
         <air.test.jvmsize>1792m</air.test.jvmsize>
+
+        <air.javadoc.lint>--missing</air.javadoc.lint>
     </properties>
 
     <modules>
@@ -298,21 +300,9 @@
             </dependency>
 
             <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
-                <version>2.4.4</version>
-            </dependency>
-
-            <dependency>
                 <groupId>org.codehaus.jackson</groupId>
                 <artifactId>jackson-mapper-asl</artifactId>
                 <version>1.9.13</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>2.4.4</version>
             </dependency>
 
             <dependency>
@@ -514,12 +504,6 @@
             </dependency>
 
             <dependency>
-                <groupId>org.jruby.joni</groupId>
-                <artifactId>joni</artifactId>
-                <version>2.0.0</version>
-            </dependency>
-
-            <dependency>
                 <groupId>com.facebook.thirdparty</groupId>
                 <artifactId>libsvm</artifactId>
                 <version>3.18.1</version>
@@ -535,12 +519,6 @@
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>9.3-1102-jdbc41</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jruby.jcodings</groupId>
-                <artifactId>jcodings</artifactId>
-                <version>1.0.8</version>
             </dependency>
 
             <dependency>
@@ -728,12 +706,6 @@
             </dependency>
 
             <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>jcl-over-slf4j</artifactId>
-                <version>1.7.12</version>
-            </dependency>
-
-            <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
                 <version>3.0.0</version>
@@ -838,7 +810,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -851,7 +823,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -864,7 +836,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -877,7 +849,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -890,7 +862,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -903,7 +875,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -932,7 +904,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
