@@ -16,9 +16,11 @@ package com.facebook.presto.execution;
 import com.facebook.presto.Session;
 import com.facebook.presto.tests.DistributedQueryRunner;
 import com.facebook.presto.tpch.TpchPlugin;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.testng.annotations.Test;
 
+import java.util.List;
 import java.util.Map;
 
 import static com.facebook.presto.execution.QueryState.FAILED;
@@ -82,6 +84,23 @@ public class TestQueues
         }
     }
 
+    @Test(timeOut = 240_000)
+    public void testSqlQueryQueueManagerWithTwoDashboardQueriesRequestedAtTheSameTime()
+            throws Exception
+    {
+        Map<String, String> properties = ImmutableMap.<String, String>builder()
+                .put("query.queue-config-file", getResourceFilePath("queue_config_dashboard.json"))
+                .build();
+
+        try (DistributedQueryRunner queryRunner = createQueryRunner(properties)) {
+            QueryId firstDashboardQuery = createQuery(queryRunner, DASHBOARD_SESSION, "SELECT COUNT(*) FROM lineitem");
+            QueryId secondDashboardQuery = createQuery(queryRunner, DASHBOARD_SESSION, "SELECT COUNT(*) FROM lineitem");
+
+            waitForQueryState(queryRunner, firstDashboardQuery, ImmutableList.of(QUEUED, RUNNING));
+            waitForQueryState(queryRunner, secondDashboardQuery, ImmutableList.of(QUEUED, RUNNING));
+        }
+    }
+
     private static QueryId createQuery(DistributedQueryRunner queryRunner, Session session, String sql)
     {
         return queryRunner.getCoordinator().getQueryManager().createQuery(session, sql).getQueryId();
@@ -92,13 +111,20 @@ public class TestQueues
         queryRunner.getCoordinator().getQueryManager().cancelQuery(queryId);
     }
 
-    private static void waitForQueryState(DistributedQueryRunner queryRunner, QueryId queryId, QueryState queryState)
+    private static void waitForQueryState(DistributedQueryRunner queryRunner, QueryId queryId, QueryState expectedQueryState)
             throws InterruptedException
     {
+        waitForQueryState(queryRunner, queryId, ImmutableList.of(expectedQueryState));
+    }
+
+    private static void waitForQueryState(DistributedQueryRunner queryRunner, QueryId queryId, List<QueryState> expectedQueryStates)
+            throws InterruptedException
+    {
+        QueryManager queryManager = queryRunner.getCoordinator().getQueryManager();
         do {
             MILLISECONDS.sleep(500);
         }
-        while (queryRunner.getCoordinator().getQueryManager().getQueryInfo(queryId).getState() != queryState);
+        while (!expectedQueryStates.contains(queryManager.getQueryInfo(queryId).getState()));
     }
 
     private String getResourceFilePath(String fileName)
