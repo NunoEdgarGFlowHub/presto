@@ -151,7 +151,9 @@ class AstBuilder
     @Override
     public Node visitCreateTableAsSelect(SqlBaseParser.CreateTableAsSelectContext context)
     {
-        return new CreateTableAsSelect(getQualifiedName(context.qualifiedName()), (Query) visit(context.query()), processTableProperties(context.tableProperties()));
+        boolean withData = context.withOrWithoutData() == null || context.withOrWithoutData().NO() == null;
+        QualifiedName qualifiedName = getQualifiedName(context.qualifiedName());
+        return new CreateTableAsSelect(qualifiedName, (Query) visit(context.query()), processTableProperties(context.tableProperties()), withData);
     }
 
     @Override

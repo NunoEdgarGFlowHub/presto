@@ -7,7 +7,7 @@ Synopsis
 
 .. code-block:: none
 
-    CREATE TABLE table_name AS query
+    CREATE TABLE table_name AS query [WITH [NO] DATA]
 
 Description
 -----------
@@ -23,4 +23,11 @@ Create a new table ``orders_by_date`` that summarizes ``orders``::
     CREATE TABLE orders_by_date AS
     SELECT orderdate, sum(totalprice) AS price
     FROM orders
+    GROUP BY orderdate
+
+Create a new table ``empty_nation`` table but with the same schema as ``nation`` but with no data::
+
+    CREATE TABLE empty_nation AS
+    SELECT * 
+    FROM nation WITH NO DATA
     GROUP BY orderdate

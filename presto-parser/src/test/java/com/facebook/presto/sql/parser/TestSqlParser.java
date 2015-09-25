@@ -711,25 +711,31 @@ public class TestSqlParser
     public void testCreateTableAsSelect()
             throws Exception
     {
+        Query selectStartFromT = simpleQuery(selectList(new AllColumns()), table(QualifiedName.of("t")));
+        QualifiedName foo = QualifiedName.of("foo");
+
         assertStatement("CREATE TABLE foo AS SELECT * FROM t",
-                new CreateTableAsSelect(QualifiedName.of("foo"),
-                        simpleQuery(selectList(new AllColumns()), table(QualifiedName.of("t"))),
-                        ImmutableMap.of()));
+                new CreateTableAsSelect(foo, selectStartFromT, ImmutableMap.of(), true));
+
+        assertStatement("CREATE TABLE foo AS SELECT * FROM t WITH DATA",
+                new CreateTableAsSelect(foo, selectStartFromT, ImmutableMap.of(), true));
+
+        assertStatement("CREATE TABLE foo AS SELECT * FROM t WITH NO DATA",
+                new CreateTableAsSelect(foo, selectStartFromT, ImmutableMap.of(), false));
 
         assertStatement("CREATE TABLE foo " +
                         "WITH ( string = 'bar', long = 42, computed = 'ban' || 'ana' ) " +
                         "AS " +
-                        "SELECT * " +
-                        "FROM t",
-                new CreateTableAsSelect(QualifiedName.of("foo"),
-                        simpleQuery(selectList(new AllColumns()), table(QualifiedName.of("t"))),
+                        "SELECT * FROM t",
+                new CreateTableAsSelect(foo,
+                        selectStartFromT,
                         ImmutableMap.<String, Expression>builder()
                                 .put("string", new StringLiteral("bar"))
                                 .put("long", new LongLiteral("42"))
                                 .put("computed", new FunctionCall(new QualifiedName("concat"), ImmutableList.of(
                                         new StringLiteral("ban"),
                                         new StringLiteral("ana"))))
-                                .build()));
+                                .build(), true));
     }
 
     @Test
