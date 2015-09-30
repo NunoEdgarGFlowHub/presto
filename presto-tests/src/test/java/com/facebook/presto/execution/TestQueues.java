@@ -42,6 +42,8 @@ public class TestQueues
             .setSource("dashboard")
             .build();
 
+    private static final String LONG_LASTING_QUERY = "SELECT COUNT(*) FROM lineitem";
+
     @Test(timeOut = 240_000)
     public void testSqlQueryQueueManager()
             throws Exception
@@ -52,25 +54,25 @@ public class TestQueues
 
         try (DistributedQueryRunner queryRunner = createQueryRunner(properties)) {
             // submit first "dashboard" query
-            QueryId firstDashboardQuery = createQuery(queryRunner, DASHBOARD_SESSION, "SELECT COUNT(*) FROM lineitem");
+            QueryId firstDashboardQuery = createQuery(queryRunner, DASHBOARD_SESSION, LONG_LASTING_QUERY);
 
             // wait for the first "dashboard" query to start
             waitForQueryState(queryRunner, firstDashboardQuery, RUNNING);
 
             // submit second "dashboard" query
-            QueryId secondDashboardQuery = createQuery(queryRunner, DASHBOARD_SESSION, "SELECT COUNT(*) FROM lineitem");
+            QueryId secondDashboardQuery = createQuery(queryRunner, DASHBOARD_SESSION, LONG_LASTING_QUERY);
 
             // wait for the second "dashboard" query to be queued ("dashboard.${USER}" queue strategy only allows one "dashboard" query to be accepted for execution)
             waitForQueryState(queryRunner, secondDashboardQuery, QUEUED);
 
             // submit first non "dashboard" query
-            QueryId firstNonDashboardQuery = createQuery(queryRunner, SESSION, "SELECT COUNT(*) FROM lineitem");
+            QueryId firstNonDashboardQuery = createQuery(queryRunner, SESSION, LONG_LASTING_QUERY);
 
             // wait for the first non "dashboard" query to start
             waitForQueryState(queryRunner, firstNonDashboardQuery, RUNNING);
 
             // submit second non "dashboard" query
-            QueryId secondNonDashboardQuery = createQuery(queryRunner, SESSION, "SELECT COUNT(*) FROM lineitem");
+            QueryId secondNonDashboardQuery = createQuery(queryRunner, SESSION, LONG_LASTING_QUERY);
 
             // wait for the second non "dashboard" query to be queued ("user.${USER}" queue strategy only allows three user queries to be accepted for execution,
             // two "dashboard" and one non "dashboard" queries are already accepted by "user.${USER}" queue)
@@ -93,11 +95,31 @@ public class TestQueues
                 .build();
 
         try (DistributedQueryRunner queryRunner = createQueryRunner(properties)) {
-            QueryId firstDashboardQuery = createQuery(queryRunner, DASHBOARD_SESSION, "SELECT COUNT(*) FROM lineitem");
-            QueryId secondDashboardQuery = createQuery(queryRunner, DASHBOARD_SESSION, "SELECT COUNT(*) FROM lineitem");
+            QueryId firstDashboardQuery = createQuery(queryRunner, DASHBOARD_SESSION, LONG_LASTING_QUERY);
+            QueryId secondDashboardQuery = createQuery(queryRunner, DASHBOARD_SESSION, LONG_LASTING_QUERY);
 
             waitForQueryState(queryRunner, firstDashboardQuery, ImmutableList.of(QUEUED, RUNNING));
             waitForQueryState(queryRunner, secondDashboardQuery, ImmutableList.of(QUEUED, RUNNING));
+        }
+    }
+
+    @Test(timeOut = 240_000)
+    public void testSqlQueryQueueManagerWithTooManyQueriesScheduled()
+            throws Exception
+    {
+        Map<String, String> properties = ImmutableMap.<String, String>builder()
+                .put("query.queue-config-file", getResourceFilePath("queue_config_dashboard.json"))
+                .build();
+
+        try (DistributedQueryRunner queryRunner = createQueryRunner(properties)) {
+            QueryId firstDashboardQuery = createQuery(queryRunner, DASHBOARD_SESSION, LONG_LASTING_QUERY);
+            waitForQueryState(queryRunner, firstDashboardQuery, RUNNING);
+
+            QueryId secondDashboardQuery = createQuery(queryRunner, DASHBOARD_SESSION, LONG_LASTING_QUERY);
+            waitForQueryState(queryRunner, secondDashboardQuery, QUEUED);
+
+            QueryId thirdDashboardQuery = createQuery(queryRunner, DASHBOARD_SESSION, LONG_LASTING_QUERY);
+            waitForQueryState(queryRunner, thirdDashboardQuery, FAILED);
         }
     }
 
