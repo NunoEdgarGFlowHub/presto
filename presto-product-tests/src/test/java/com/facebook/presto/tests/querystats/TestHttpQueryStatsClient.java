@@ -31,7 +31,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Optional;
 
-import static com.google.common.base.Charsets.UTF_8;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Test(singleThreaded = true)

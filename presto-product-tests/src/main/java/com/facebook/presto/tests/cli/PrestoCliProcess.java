@@ -15,10 +15,10 @@ package com.facebook.presto.tests.cli;
 
 import com.teradata.tempto.process.LocalCliProcess;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.regex.Pattern.quote;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,7 +35,7 @@ public final class PrestoCliProcess
 
     public List<String> readLinesUntilPrompt()
     {
-        List<String> lines = newArrayList();
+        List<String> lines = new ArrayList<>();
         while (!hasNextOutput(PRESTO_PROMPT_PATTERN)) {
             lines.add(nextOutputLine());
         }

@@ -8,15 +8,14 @@ docker images to be used on local developer machine for easy setup of presto ins
 like hadoop. You can also start presto on your machine locally from IDE (please check main presto README).
 
 To make it work you need either: 
- - define environment variables for hadodp ${HADOOP_MASTER} and presto ${PRESTO_MASTER} with their IP numbers,
+ - define environment variables for hadoop ${HADOOP_MASTER} and presto ${PRESTO_MASTER} with their IP numbers,
 and ${PRESTO_PRODUCT_TESTS_ROOT} with path to the presto product test directory
- - create src/test/resources/test-configuration-local.yaml with following (example content):
+ - create test-configuration-local.yaml with following (example content):
 
 ```
 databases:
   hive:
     host: 172.16.2.10
-    jdbc_jar: /home/kogut/src/git/teradata/presto/presto-product-tests/libs/test-framework-hive-jdbc-all.jar
 
   presto:
     host: 192.168.205.1
@@ -24,14 +23,8 @@ databases:
 
 ## Running tests
 
-Product tests are not run by default. To start them use _productTests_ maven profile:
+Product tests are not run by default. To start them use run following command:
 
 ```
-mvn -PproductTests test
-```
-
-## Running particular test groups
-
-```
-mvn -PproductTests -Dgroups=jmx test
+java -jar target/presto-product-tests-*-executable.jar --config-local file://`pwd`/tempto-configuration-local.yaml
 ```

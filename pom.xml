@@ -5,7 +5,8 @@
     <parent>
         <groupId>io.airlift</groupId>
         <artifactId>airbase</artifactId>
-        <version>43</version>
+        <!-- TODO: before merge this PR to master, airbase need to be released and SNAPSHOT removed from here-->
+        <version>43-SNAPSHOT</version>
     </parent>
 
     <groupId>com.facebook.presto</groupId>
@@ -88,7 +89,6 @@
         <module>presto-ml</module>
         <module>presto-benchmark</module>
         <module>presto-tests</module>
-        <module>presto-product-tests-utils</module>
         <module>presto-product-tests</module>
         <module>presto-jdbc</module>
         <module>presto-cli</module>
@@ -689,7 +689,21 @@
             <dependency>
                 <groupId>com.teradata.tempto</groupId>
                 <artifactId>tempto-core</artifactId>
-                <version>1.0.36</version>
+                <!-- TODO: before merge this PR to master, we release tempto to remove usage of SNAPSHOT -->
+                <version>1.0.37-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.teradata.tempto</groupId>
+                <artifactId>tempto-runner</artifactId>
+                <!-- TODO: before merge this PR to master, we release tempto to remove usage of SNAPSHOT -->
+                <version>1.0.37-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.facebook.presto.hive</groupId>
+                <artifactId>hive-apache-jdbc</artifactId>
+                <version>0.13.1-1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
